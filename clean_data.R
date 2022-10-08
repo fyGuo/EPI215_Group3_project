@@ -228,4 +228,5 @@ sapply(dta, function(x){
 # other missing values are over 50%.
 # I would like to try to impute classwkr, but delete other variables which is not of much use
 
-dta <- dta %>% select(-AVAILBLE, -CARPOOL,-TRANTIME,-GCRESPON)
+dta <- dta %>% select(-AVAILBLE, -CARPOOL,-TRANTIME,-GCRESPON,-WKSWORK2)
+saveRDS(dta, "clean_data.rds")
