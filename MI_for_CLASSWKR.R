@@ -1,7 +1,8 @@
 library(tidyverse)
 library(mice)
-dta <- read_rds("clean_data.rds")
+dta <- read_rds("clean_data_train.rds")
 dta$id <- 1:dim(dta)[1]
+dta <- dta %>% select(-dataset)
 # this R script is to do multiple imputation to impute the missing WRKCLASS
 
 # we first exclude DIVINYR and WIDINYR which are not needed to be imputed.

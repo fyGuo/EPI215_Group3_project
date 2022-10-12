@@ -3,10 +3,14 @@ library(haven)
 
 #################################
 # read in the unformatted data
-dta_f <- read_csv("project_data.csv")
 dta <- read_csv("project_data_noformat.csv")
-
-
+# determine the number of observations in the training dataset
+round(dim(dta)[1]*0.8)
+set.seed(123)
+train_id<- sample(1:dim(dta)[1], 7038)
+dta$dataset <- "test"
+dta$dataset[train_id] <- "train"
+table(dta$dataset)
 #############################
 # 1. Family size: continuous variable, we can keep this variable since
 # 2. ELDCH: age of eldest own child in household, less related to this adult's hearing situation
@@ -228,5 +232,13 @@ sapply(dta, function(x){
 # other missing values are over 50%.
 # I would like to try to impute classwkr, but delete other variables which is not of much use
 
-dta <- dta %>% select(-AVAILBLE, -CARPOOL,-TRANTIME,-GCRESPON,-WKSWORK2)
-saveRDS(dta, "clean_data.rds")
+dta <- dta %>% dplyr::select(-AVAILBLE, -CARPOOL,-TRANTIME,-GCRESPON,-WKSWORK2)
+saveRDS(dta, "clean_data_whole.rds")
+
+dta_train <- dta %>% dplyr::filter(dataset == "train")
+saveRDS(dta_train, "clean_data_train.rds")
+
+
+
+dta_test <- dta %>% dplyr::filter(dataset == "test")
+saveRDS(dta_test, "clean_data_test.rds")
