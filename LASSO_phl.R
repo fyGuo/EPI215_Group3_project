@@ -1,0 +1,639 @@
+## -------------------------------------------------------------
+#Load libraries and data
+library(MASS)
+library(tidyverse)
+library(glmnet)
+library(fastDummies)
+library(gamlr)
+
+dta1 <- read_csv("MI_clean_data1.csv")
+dta2 <- read_csv("MI_clean_data2.csv")
+dta3 <- read_csv("MI_clean_data3.csv")
+dta4 <- read_csv("MI_clean_data4.csv")
+dta5 <- read_csv("MI_clean_data5.csv")
+dta6 <- read_csv("MI_clean_data6.csv")
+dta7 <- read_csv("MI_clean_data7.csv")
+dta8 <- read_csv("MI_clean_data8.csv")
+dta9 <- read_csv("MI_clean_data9.csv")
+dta10 <- read_csv("MI_clean_data10.csv")
+
+
+## -------------------------------------------------------------
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta1)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta1)
+mod_step <- stepAIC(mod_org, mod_final)
+
+
+dta1_n <- dummy_cols(dta1)
+
+class <- sapply(dta1_n, function(x){
+  class(x)
+})
+
+dta1_n <- dta1_n[,class != "character"]
+class <- sapply(dta1_n, function(x){
+  class(x)
+})
+#class
+dta1_n <- dta1_n %>%
+  dplyr::select(-id) 
+x <-dta1_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR) %>% as.matrix()
+
+y <- dta1_n$DIFFHEAR %>% as.matrix()
+
+cv_model <- cv.glmnet(x, 
+                      y, 
+                      family = "binomial",
+                      alpha = 1)
+# I set the lambda to be the lambda within 1 se from the lowest AIC
+lambda <- cv_model$lambda.1se
+cv_model
+plot(cv_model)
+glmnet(x,y,
+       family = "binomial",
+       alpha = 1,
+       lambda = lambda) %>% coef()
+
+
+mod.c.gamlr <- gamlr(x=x, y=y)
+mod.c.gamlr$lambda[which.min(AICc(mod.c.gamlr))]
+coef(cv_model, s=0.004)
+
+## Training Data
+dta1_n_sub <- dta1_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR)
+
+dta1_n_sub$p_hl <- predict(cv_model, s=0.004,
+                        newx=as.matrix(dta1_n_sub), type = "response")
+
+# Don't know if this is right, below.
+# pred_c_train <- predict(cv_model, s=0.004,
+#                         newx=as.matrix(dta1_n_sub), type = "response")
+
+#cor.test(as.numeric(pred_c_train), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+
+## Test Data -- add when have it
+# pred_c_test <- predict(mod.c, s=0.004, 
+#                        newx=as.matrix(dta1_n_test_sub))
+
+# cor.test(as.numeric(pred_c_test), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+
+
+## -------------------------------------------------------------
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta2)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta2)
+mod_step <- stepAIC(mod_org, mod_final)
+
+
+dta2_n <- dummy_cols(dta2)
+
+class <- sapply(dta2_n, function(x){
+  class(x)
+})
+
+dta2_n <- dta2_n[,class != "character"]
+class <- sapply(dta2_n, function(x){
+  class(x)
+})
+#class
+dta2_n <- dta2_n %>%
+  dplyr::select(-id) 
+x <-dta2_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR) %>% as.matrix()
+
+y <- dta2_n$DIFFHEAR %>% as.matrix()
+
+cv_model <- cv.glmnet(x, 
+                      y, 
+                      family = "binomial",
+                      alpha = 1)
+# I set the lambda to be the lambda within 1 se from the lowest AIC
+lambda <- cv_model$lambda.1se
+cv_model
+plot(cv_model)
+glmnet(x,y,
+       family = "binomial",
+       alpha = 1,
+       lambda = lambda) %>% coef()
+
+mod.c.gamlr <- gamlr(x=x, y=y)
+mod.c.gamlr$lambda[which.min(AICc(mod.c.gamlr))]
+coef(cv_model, s=0.004)
+
+## Training Data
+dta2_n_sub <- dta2_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR)
+
+dta2_n_sub$p_hl <- predict(cv_model, s=0.004,
+                        newx=as.matrix(dta2_n_sub), type = "response")
+
+# pred_c_train <- predict(cv_model, s=0.004,
+#                         newx=as.matrix(dta2_n_sub))
+# 
+# cor.test(as.numeric(pred_c_train), dta2$DIFFHEAR, method="pearson", conf.level=0.95)
+
+## Test Data -- add when have it
+# pred_c_test <- predict(mod.c, s=0.004, 
+#                        newx=as.matrix(dta1_n_test_sub))
+
+# cor.test(as.numeric(pred_c_test), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+
+
+## -------------------------------------------------------------
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta3)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta3)
+mod_step <- stepAIC(mod_org, mod_final)
+
+
+dta3_n <- dummy_cols(dta3)
+
+class <- sapply(dta3_n, function(x){
+  class(x)
+})
+
+dta3_n <- dta3_n[,class != "character"]
+class <- sapply(dta3_n, function(x){
+  class(x)
+})
+#class
+dta3_n <- dta3_n %>%
+  dplyr::select(-id) 
+x <-dta3_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR) %>% as.matrix()
+
+y <- dta3_n$DIFFHEAR %>% as.matrix()
+
+cv_model <- cv.glmnet(x, 
+                      y, 
+                      family = "binomial",
+                      alpha = 1)
+# I set the lambda to be the lambda within 1 se from the lowest AIC
+lambda <- cv_model$lambda.1se
+cv_model
+plot(cv_model)
+glmnet(x,y,
+       family = "binomial",
+       alpha = 1,
+       lambda = lambda) %>% coef()
+
+mod.c.gamlr <- gamlr(x=x, y=y)
+mod.c.gamlr$lambda[which.min(AICc(mod.c.gamlr))]
+coef(cv_model, s=0.004)
+
+## Training Data
+dta3_n_sub <- dta3_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR)
+
+dta3_n_sub$p_hl <- predict(cv_model, s=0.004,
+                        newx=as.matrix(dta3_n_sub), type = "response")
+
+# pred_c_train <- predict(cv_model, s=0.004,
+#                         newx=as.matrix(dta3_n_sub))
+# 
+# cor.test(as.numeric(pred_c_train), dta3$DIFFHEAR, method="pearson", conf.level=0.95)
+
+## Test Data -- add when have it
+# pred_c_test <- predict(mod.c, s=0.004, 
+#                        newx=as.matrix(dta1_n_test_sub))
+
+# cor.test(as.numeric(pred_c_test), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+
+
+## -------------------------------------------------------------
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta4)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta4)
+mod_step <- stepAIC(mod_org, mod_final)
+
+
+dta4_n <- dummy_cols(dta4)
+
+class <- sapply(dta4_n, function(x){
+  class(x)
+})
+
+dta4_n <- dta4_n[,class != "character"]
+class <- sapply(dta4_n, function(x){
+  class(x)
+})
+#class
+dta4_n <- dta4_n %>%
+  dplyr::select(-id) 
+x <-dta4_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR) %>% as.matrix()
+
+y <- dta4_n$DIFFHEAR %>% as.matrix()
+
+cv_model <- cv.glmnet(x, 
+                      y, 
+                      family = "binomial",
+                      alpha = 1)
+# I set the lambda to be the lambda within 1 se from the lowest AIC
+lambda <- cv_model$lambda.1se
+cv_model
+plot(cv_model)
+glmnet(x,y,
+       family = "binomial",
+       alpha = 1,
+       lambda = lambda) %>% coef()
+
+mod.c.gamlr <- gamlr(x=x, y=y)
+mod.c.gamlr$lambda[which.min(AICc(mod.c.gamlr))]
+coef(cv_model, s=0.004)
+
+## Training Data
+dta4_n_sub <- dta4_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR)
+
+dta4_n_sub$p_hl <- predict(cv_model, s=0.004,
+                        newx=as.matrix(dta4_n_sub), type = "response")
+
+# pred_c_train <- predict(cv_model, s=0.004,
+#                         newx=as.matrix(dta4_n_sub))
+# 
+# cor.test(as.numeric(pred_c_train), dta4$DIFFHEAR, method="pearson", conf.level=0.95)
+
+## Test Data -- add when have it
+# pred_c_test <- predict(mod.c, s=0.004, 
+#                        newx=as.matrix(dta1_n_test_sub))
+
+# cor.test(as.numeric(pred_c_test), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+
+
+## -------------------------------------------------------------
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta5)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta5)
+mod_step <- stepAIC(mod_org, mod_final)
+
+
+dta5_n <- dummy_cols(dta5)
+
+class <- sapply(dta5_n, function(x){
+  class(x)
+})
+
+dta5_n <- dta5_n[,class != "character"]
+class <- sapply(dta5_n, function(x){
+  class(x)
+})
+#class
+dta5_n <- dta5_n %>%
+  dplyr::select(-id) 
+x <-dta5_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR) %>% as.matrix()
+
+y <- dta5_n$DIFFHEAR %>% as.matrix()
+
+cv_model <- cv.glmnet(x, 
+                      y, 
+                      family = "binomial",
+                      alpha = 1)
+# I set the lambda to be the lambda within 1 se from the lowest AIC
+lambda <- cv_model$lambda.1se
+cv_model
+plot(cv_model)
+glmnet(x,y,
+       family = "binomial",
+       alpha = 1,
+       lambda = lambda) %>% coef()
+
+mod.c.gamlr <- gamlr(x=x, y=y)
+mod.c.gamlr$lambda[which.min(AICc(mod.c.gamlr))]
+coef(cv_model, s=0.004)
+
+## Training Data
+dta5_n_sub <- dta5_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR)
+
+dta5_n_sub$p_hl <- predict(cv_model, s=0.004,
+                        newx=as.matrix(dta5_n_sub), type = "response")
+
+# pred_c_train <- predict(cv_model, s=0.004,
+#                         newx=as.matrix(dta5_n_sub))
+# 
+# cor.test(as.numeric(pred_c_train), dta5$DIFFHEAR, method="pearson", conf.level=0.95)
+
+## Test Data -- add when have it
+# pred_c_test <- predict(mod.c, s=0.004, 
+#                        newx=as.matrix(dta1_n_test_sub))
+
+# cor.test(as.numeric(pred_c_test), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+
+
+## -------------------------------------------------------------
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta6)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta6)
+mod_step <- stepAIC(mod_org, mod_final)
+
+
+dta6_n <- dummy_cols(dta6)
+
+class <- sapply(dta6_n, function(x){
+  class(x)
+})
+
+dta6_n <- dta6_n[,class != "character"]
+class <- sapply(dta6_n, function(x){
+  class(x)
+})
+#class
+dta6_n <- dta6_n %>%
+  dplyr::select(-id) 
+x <-dta6_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR) %>% as.matrix()
+
+y <- dta6_n$DIFFHEAR %>% as.matrix()
+
+cv_model <- cv.glmnet(x, 
+                      y, 
+                      family = "binomial",
+                      alpha = 1)
+# I set the lambda to be the lambda within 1 se from the lowest AIC
+lambda <- cv_model$lambda.1se
+cv_model
+plot(cv_model)
+glmnet(x,y,
+       family = "binomial",
+       alpha = 1,
+       lambda = lambda) %>% coef()
+
+mod.c.gamlr <- gamlr(x=x, y=y)
+mod.c.gamlr$lambda[which.min(AICc(mod.c.gamlr))]
+coef(cv_model, s=0.004)
+
+## Training Data
+dta6_n_sub <- dta6_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR)
+
+dta6_n_sub$p_hl <- predict(cv_model, s=0.004,
+                        newx=as.matrix(dta6_n_sub), type = "response")
+
+# pred_c_train <- predict(cv_model, s=0.004,
+#                         newx=as.matrix(dta6_n_sub))
+# 
+# cor.test(as.numeric(pred_c_train), dta6$DIFFHEAR, method="pearson", conf.level=0.95)
+
+## Test Data -- add when have it
+# pred_c_test <- predict(mod.c, s=0.004, 
+#                        newx=as.matrix(dta1_n_test_sub))
+
+# cor.test(as.numeric(pred_c_test), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+
+
+## -------------------------------------------------------------
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta7)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta7)
+mod_step <- stepAIC(mod_org, mod_final)
+
+
+dta7_n <- dummy_cols(dta7)
+
+class <- sapply(dta7_n, function(x){
+  class(x)
+})
+
+dta7_n <- dta7_n[,class != "character"]
+class <- sapply(dta7_n, function(x){
+  class(x)
+})
+#class
+dta7_n <- dta7_n %>%
+  dplyr::select(-id) 
+x <-dta7_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR) %>% as.matrix()
+
+y <- dta7_n$DIFFHEAR %>% as.matrix()
+
+cv_model <- cv.glmnet(x, 
+                      y, 
+                      family = "binomial",
+                      alpha = 1)
+# I set the lambda to be the lambda within 1 se from the lowest AIC
+lambda <- cv_model$lambda.1se
+cv_model
+plot(cv_model)
+glmnet(x,y,
+       family = "binomial",
+       alpha = 1,
+       lambda = lambda) %>% coef()
+
+mod.c.gamlr <- gamlr(x=x, y=y)
+mod.c.gamlr$lambda[which.min(AICc(mod.c.gamlr))]
+coef(cv_model, s=0.004)
+
+## Training Data
+dta7_n_sub <- dta7_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR)
+dta7_n_sub$p_hl <- predict(cv_model, s=0.004,
+                        newx=as.matrix(dta7_n_sub), type = "response")
+
+# pred_c_train <- predict(cv_model, s=0.004,
+#                         newx=as.matrix(dta7_n_sub))
+# 
+# cor.test(as.numeric(pred_c_train), dta7$DIFFHEAR, method="pearson", conf.level=0.95)
+
+## Test Data -- add when have it
+# pred_c_test <- predict(mod.c, s=0.004, 
+#                        newx=as.matrix(dta1_n_test_sub))
+
+# cor.test(as.numeric(pred_c_test), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+
+
+## -------------------------------------------------------------
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta8)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta8)
+mod_step <- stepAIC(mod_org, mod_final)
+
+
+dta8_n <- dummy_cols(dta8)
+
+class <- sapply(dta8_n, function(x){
+  class(x)
+})
+
+dta8_n <- dta8_n[,class != "character"]
+class <- sapply(dta8_n, function(x){
+  class(x)
+})
+#class
+dta8_n <- dta8_n %>%
+  dplyr::select(-id) 
+x <-dta8_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR) %>% as.matrix()
+
+y <- dta8_n$DIFFHEAR %>% as.matrix()
+
+cv_model <- cv.glmnet(x, 
+                      y, 
+                      family = "binomial",
+                      alpha = 1)
+# I set the lambda to be the lambda within 1 se from the lowest AIC
+lambda <- cv_model$lambda.1se
+cv_model
+plot(cv_model)
+glmnet(x,y,
+       family = "binomial",
+       alpha = 1,
+       lambda = lambda) %>% coef()
+
+mod.c.gamlr <- gamlr(x=x, y=y)
+mod.c.gamlr$lambda[which.min(AICc(mod.c.gamlr))]
+coef(cv_model, s=0.004)
+
+## Training Data
+dta8_n_sub <- dta8_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR)
+
+dta8_n_sub$p_hl <- predict(cv_model, s=0.004,
+                        newx=as.matrix(dta8_n_sub), type = "response")
+
+# pred_c_train <- predict(cv_model, s=0.004,
+#                         newx=as.matrix(dta8_n_sub))
+# 
+# cor.test(as.numeric(pred_c_train), dta8$DIFFHEAR, method="pearson", conf.level=0.95)
+
+## Test Data -- add when have it
+# pred_c_test <- predict(mod.c, s=0.004, 
+#                        newx=as.matrix(dta1_n_test_sub))
+
+# cor.test(as.numeric(pred_c_test), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+
+
+## -------------------------------------------------------------
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta9)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta9)
+mod_step <- stepAIC(mod_org, mod_final)
+
+
+dta9_n <- dummy_cols(dta9)
+
+class <- sapply(dta9_n, function(x){
+  class(x)
+})
+
+dta9_n <- dta9_n[,class != "character"]
+class <- sapply(dta9_n, function(x){
+  class(x)
+})
+#class
+dta9_n <- dta9_n %>%
+  dplyr::select(-id) 
+x <-dta9_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR) %>% as.matrix()
+
+y <- dta9_n$DIFFHEAR %>% as.matrix()
+
+cv_model <- cv.glmnet(x, 
+                      y, 
+                      family = "binomial",
+                      alpha = 1)
+# I set the lambda to be the lambda within 1 se from the lowest AIC
+lambda <- cv_model$lambda.1se
+cv_model
+plot(cv_model)
+glmnet(x,y,
+       family = "binomial",
+       alpha = 1,
+       lambda = lambda) %>% coef()
+
+mod.c.gamlr <- gamlr(x=x, y=y)
+mod.c.gamlr$lambda[which.min(AICc(mod.c.gamlr))]
+coef(cv_model, s=0.004)
+
+## Training Data
+dta9_n_sub <- dta9_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR)
+dta9_n_sub$p_hl <- predict(cv_model, s=0.004,
+                        newx=as.matrix(dta9_n_sub), type = "response")
+
+# pred_c_train <- predict(cv_model, s=0.004,
+#                         newx=as.matrix(dta9_n_sub))
+# 
+# cor.test(as.numeric(pred_c_train), dta9$DIFFHEAR, method="pearson", conf.level=0.95)
+
+## Test Data -- add when have it
+# pred_c_test <- predict(mod.c, s=0.004, 
+#                        newx=as.matrix(dta1_n_test_sub))
+
+# cor.test(as.numeric(pred_c_test), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+
+
+## -------------------------------------------------------------
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta10)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta10)
+mod_step <- stepAIC(mod_org, mod_final)
+
+
+dta10_n <- dummy_cols(dta10)
+
+class <- sapply(dta10_n, function(x){
+  class(x)
+})
+
+dta10_n <- dta10_n[,class != "character"]
+class <- sapply(dta10_n, function(x){
+  class(x)
+})
+#class
+dta10_n <- dta10_n %>%
+  dplyr::select(-id) 
+x <-dta10_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR) %>% as.matrix()
+
+y <- dta10_n$DIFFHEAR %>% as.matrix()
+
+cv_model <- cv.glmnet(x, 
+                      y, 
+                      family = "binomial",
+                      alpha = 1)
+# I set the lambda to be the lambda within 1 se from the lowest AIC
+lambda <- cv_model$lambda.1se
+cv_model
+plot(cv_model)
+glmnet(x,y,
+       family = "binomial",
+       alpha = 1,
+       lambda = lambda) %>% coef()
+
+mod.c.gamlr <- gamlr(x=x, y=y)
+mod.c.gamlr$lambda[which.min(AICc(mod.c.gamlr))]
+coef(cv_model, s=0.004)
+
+## Training Data
+dta10_n_sub <- dta10_n %>% dplyr::select(-DIFFHEAR, -DIVINYR , -WIDINYR)
+
+dta10_n_sub$p_hl <- predict(cv_model, s=0.004,
+                        newx=as.matrix(dta10_n_sub), type = "response")
+
+# pred_c_train <- predict(cv_model, s=0.004,
+#                         newx=as.matrix(dta10_n_sub))
+# 
+# cor.test(as.numeric(pred_c_train), dta10$DIFFHEAR, method="pearson", conf.level=0.95)
+
+## Test Data -- add when have it
+# pred_c_test <- predict(mod.c, s=0.004, 
+#                        newx=as.matrix(dta1_n_test_sub))
+
+# cor.test(as.numeric(pred_c_test), dta1$DIFFHEAR, method="pearson", conf.level=0.95)
+

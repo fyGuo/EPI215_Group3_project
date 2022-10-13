@@ -15,7 +15,7 @@ table(dta$dataset)
 # 1. Family size: continuous variable, we can keep this variable since
 # 2. ELDCH: age of eldest own child in household, less related to this adult's hearing situation
 # thus, less delete this one
-dta <- dta %>% select(-ELDCH)
+dta <- dta %>% dplyr::select(-ELDCH)
 
 # 3.sex_f: sex of the individuals. Keep the original value. Just keep in mind that
 # 1= male; 2= female
@@ -36,11 +36,11 @@ dta <- dta %>%
 # 5. marrno_f: time married. This one carries similar information as married.
 # I think times married is less related to hearing loss if the marriage status has already been considered.
 # just leave out this information
-dta <- dta %>% select(-MARRNO)
+dta <- dta %>% dplyr::select(-MARRNO)
 
 # 6. MARRINYR: married within the last year
 # this one is confusing and is less useful than marriage status, so delete it.
-dta <- dta %>% select(-MARRINYR)
+dta <- dta %>% dplyr::select(-MARRINYR)
 
 #7. DIVINYR: divored in the last year, change the coding method to make NA exmplicit
 # NA: missing, 0: No, 1:Yes
@@ -70,11 +70,11 @@ dta <- dta %>%
 # 12. SPEAKENG_f: speak english or not, it covers similar information as race and education
 # to make the dataset smaller, I decide to delete it
 
-dta <- dta %>% select(-SPEAKENG)
+dta <- dta %>% dplyr::select(-SPEAKENG)
 
 # 13. RACNUM_f: race groups, less useful information given we have race category
 # delete it
-dta <- dta %>% select(-RACNUM)
+dta <- dta %>% dplyr::select(-RACNUM)
 
 # 14. HCOVANY: health insurance coverage
 # 0 :No, 1:Yes
@@ -89,7 +89,7 @@ dta$HCOVANY <- dta$HCOVANY -1
 # 21 HINSVA_f: delete
 # 22 HINSIHS_f: delete
 
-dta <- dta %>% select(-c(HCOVPRIV, HINSEMP, HINSPUR, HCOVPUB,
+dta <- dta %>% dplyr::select(-c(HCOVPRIV, HINSEMP, HINSPUR, HCOVPUB,
                          HINSCAID, HINSCARE, HINSVA, HINSIHS))
 
 # 23 EDUC: I would like to convert it into 
@@ -113,7 +113,7 @@ dta$WORK_STATUS <- NA
 dta$WORK_STATUS <- ifelse(dta$EMPSTAT==1, "Employed", dta$WORK_STATUS)
 dta$WORK_STATUS <- ifelse(dta$EMPSTAT ==2, "Unemployed", dta$WORK_STATUS)
 dta$WORK_STATUS <- ifelse(dta$EMPSTAT == 3|dta$LABFORCE==1, "Not in labor force", dta$WORK_STATUS)
-dta <- dta %>% select(-EMPSTAT,-LABFORCE)
+dta <- dta %>% dplyr::select(-EMPSTAT,-LABFORCE)
 
 # 27. CLASSWKR:self-employed vs. work for wages. 
 dta$CLASSWKR[dta$CLASSWKR == 0 ] <- NA
@@ -134,13 +134,13 @@ dta <- dta %>%
 
 # 29. value WRKLSTWK_f: worked last week ? this one is not of much use and can be sensible to the 
 # survey time, so just delete it
-dta <- dta %>% select(-WRKLSTWK)
+dta <- dta %>% dplyr::select(-WRKLSTWK)
 
 # 30. value ABSENT: absent last week. Same reason, just delete it
-dta <- dta %>% select(-ABSENT)
+dta <- dta %>% dplyr::select(-ABSENT)
 
 # 31. Looking : looing for work, less important than work status, delete it
-dta <- dta %>% select(-LOOKING)
+dta <- dta %>% dplyr::select(-LOOKING)
 
 # 32. AVAILBLE: convert the variable as Collen suggested
 # 1. avaliable for work or has a work
@@ -173,27 +173,27 @@ dta$VETSTAT <- ifelse(dta$VETSTAT == 1, "Not a veteran", "Veteran")
 # 44. VETWWII_f
 # 45. VETOTHER_f
 # delete
-dta <- dta %>% select(-c(VETSTATD, VET01LTR, VET90X01, VET75X90, VETVIETN,
+dta <- dta %>% dplyr::select(-c(VETSTATD, VET01LTR, VET90X01, VET75X90, VETVIETN,
                          VET55X64, VETKOREA, VET47X50, VETWWII, VETOTHER))
 
 # 46. TRANWOR: not much useful because a lot of 0 (NAs)
 table(dta$TRANWORK==0) %>% prop.table()
 # you can see about 83.5% are missing
-dta <- dta %>% select(-TRANWORK)
+dta <- dta %>% dplyr::select(-TRANWORK)
 
 # 46. Carpool: convert it
 dta$CARPOOL[dta$CARPOOL==0] <- NA
 dta$CARPOOL <- if_else(dta$CARPOOL==1, "Drives alone", "Carpools")
 
 # 47. RIDERS: we already have the carpool variable, which makes this variable less useful
-dta <- dta %>% select(-RIDERS)
+dta <- dta %>% dplyr::select(-RIDERS)
 
 # 48. GCHHOUSE: Own grandchildren living in household
 dta$GCHOUSE[dta$GCHOUSE==0] <- NA
 dta$GCHOUSE <- dta$GCHOUSE-1
 
 # 49. GCMONTHS: less useful compared to GXRESPON
-dta <- dta %>% select(-GCMONTHS)
+dta <- dta %>% dplyr::select(-GCMONTHS)
 
 # 50. GCRESPON
 dta$GCRESPON[dta$GCRESPON == 0] <- NA
@@ -219,6 +219,16 @@ View(dta)
 # 55. TRANTIME: time of transportaton, keep original value
 dta$TRANTIME[dta$TRANTIME==0]<- NA
 
+
+## 56. Arrive and departs
+dta$ARRIVES[dta$ARRIVES == 0] <- NA
+dta$ARRIVES[dta$ARRIVES <= 1200] <- "AM"
+dta$ARRIVES[dta$ARRIVES > 1200] <- "PM"
+
+dta$DEPARTS[dta$DEPARTS == 0] <- NA
+dta$DEPARTS[dta$DEPARTS <= 1200] <- "AM"
+dta$DEPARTS[dta$DEPARTS > 1200] <- "PM"
+
 #############################
 ###########################
 # check the missingness situation
@@ -242,3 +252,4 @@ saveRDS(dta_train, "clean_data_train.rds")
 
 dta_test <- dta %>% dplyr::filter(dataset == "test")
 saveRDS(dta_test, "clean_data_test.rds")
+write_csv(dta_test, "clean_data_test.csv")
