@@ -2,11 +2,11 @@ library(tidyverse)
 library(mice)
 dta <- read_rds("clean_data_train.rds")
 dta$id <- 1:dim(dta)[1]
-dta <- dta %>% select(-dataset)
+dta <- dta %>% dplyr::select(-dataset)
 # this R script is to do multiple imputation to impute the missing WRKCLASS
 
 # we first exclude DIVINYR and WIDINYR which are not needed to be imputed.
-df <- dta %>% select(-DIVINYR, -WIDINYR)
+df <- dta %>% dplyr::select(-DIVINYR, -WIDINYR)
 sapply(df, function (x){
   is.na(x) %>% sum()
 })
@@ -36,7 +36,7 @@ imp_df <- merge(imp_df, dta[,c("id", "DIVINYR", "WIDINYR")])
 for (i in 1:10) {
   
   tmp <- imp_df %>% filter(`.imp`==i)
-  tmp %>% select(-".imp", -".id") %>%
+  tmp %>% dplyr::select(-".imp", -".id") %>%
     write_csv(file = paste("MI_clean_data", i,".csv", sep = ""))
   
 }
