@@ -1,0 +1,260 @@
+## ------------------------------------------------------------------------------------------------
+#Load libraries and data
+library(MASS)
+library(tidyverse)
+library(glmnet)
+library(fastDummies)
+library(gamlr)
+library(pROC)
+
+dta1 <- read_csv("MI Data/MI_clean_data1.csv")
+dta2 <- read_csv("MI Data/MI_clean_data2.csv")
+dta3 <- read_csv("MI Data/MI_clean_data3.csv")
+dta4 <- read_csv("MI Data/MI_clean_data4.csv")
+dta5 <- read_csv("MI Data/MI_clean_data5.csv")
+dta6 <- read_csv("MI Data/MI_clean_data6.csv")
+dta7 <- read_csv("MI Data/MI_clean_data7.csv")
+dta8 <- read_csv("MI Data/MI_clean_data8.csv")
+dta9 <- read_csv("MI Data/MI_clean_data9.csv")
+dta10 <- read_csv("MI Data/MI_clean_data10.csv")
+
+
+## ------------------------------------------------------------------------------------------------
+dta1_mod <- dta1 %>% dplyr::select(-DIVINYR , -WIDINYR)
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta1_mod)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta1_mod)
+
+mod_step <- stepAIC(mod_org, scope=formula(mod_final), direction = "forward")
+summary(mod_step)
+
+## Training data
+dta1_mod$p_hl <- predict(mod_step, newdata=dta1_mod, type = "response")
+#cor.test(dta1_mod, dta1_mod$DIFFHEAR, method="pearson", conf.level=0.95)
+
+roccurve.a <- roc(dta1_mod$DIFFHEAR ~ dta1_mod$p_hl) 
+roccurve.a
+
+## Test data - add later
+#pred_b_test <- predict(mod.b, newdata=lab1.test)
+#cor.test(pred_b_test, lab1.test$SBP, method="pearson", conf.level=0.95)
+
+
+## ------------------------------------------------------------------------------------------------
+dta2_mod <- dta2 %>% dplyr::select(-DIVINYR , -WIDINYR)
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta2_mod)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta2_mod)
+
+mod_step <- stepAIC(mod_org, scope=formula(mod_final), direction = "forward")
+summary(mod_step)
+
+## Training data
+dta2_mod$p_hl <- predict(mod_step, newdata=dta2_mod, type = "response")
+#cor.test(dta2_mod, dta2_mod$DIFFHEAR, method="pearson", conf.level=0.95)
+
+roccurve.a <- roc(dta2_mod$DIFFHEAR ~ dta2_mod$p_hl) 
+roccurve.a
+
+## Test data - add later
+#pred_b_test <- predict(mod.b, newdata=lab1.test)
+#cor.test(pred_b_test, lab1.test$SBP, method="pearson", conf.level=0.95)
+
+
+## ------------------------------------------------------------------------------------------------
+dta3_mod <- dta3 %>% dplyr::select(-DIVINYR , -WIDINYR)
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta3_mod)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta3_mod)
+
+mod_step <- stepAIC(mod_org, scope=formula(mod_final), direction = "forward")
+summary(mod_step)
+
+## Training data
+dta3_mod$p_hl <- predict(mod_step, newdata=dta3_mod, type = "response")
+#cor.test(dta3_mod, dta3_mod$DIFFHEAR, method="pearson", conf.level=0.95)
+
+roccurve.a <- roc(dta3_mod$DIFFHEAR ~ dta3_mod$p_hl) 
+roccurve.a
+
+## Test data - add later
+#pred_b_test <- predict(mod.b, newdata=lab1.test)
+#cor.test(pred_b_test, lab1.test$SBP, method="pearson", conf.level=0.95)
+
+
+## ------------------------------------------------------------------------------------------------
+dta4_mod <- dta4 %>% dplyr::select(-DIVINYR , -WIDINYR)
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta4_mod)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta4_mod)
+
+mod_step <- stepAIC(mod_org, scope=formula(mod_final), direction = "forward")
+summary(mod_step)
+
+## Training data
+dta4_mod$p_hl <- predict(mod_step, newdata=dta4_mod, type = "response")
+#cor.test(dta4_mod, dta4_mod$DIFFHEAR, method="pearson", conf.level=0.95)
+
+roccurve.a <- roc(dta4_mod$DIFFHEAR ~ dta4_mod$p_hl) 
+roccurve.a
+
+## Test data - add later
+#pred_b_test <- predict(mod.b, newdata=lab1.test)
+#cor.test(pred_b_test, lab1.test$SBP, method="pearson", conf.level=0.95)
+
+
+## ------------------------------------------------------------------------------------------------
+dta5_mod <- dta5 %>% dplyr::select(-DIVINYR , -WIDINYR)
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta5_mod)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta5_mod)
+
+mod_step <- stepAIC(mod_org, scope=formula(mod_final), direction = "forward")
+summary(mod_step)
+
+## Training data
+dta5_mod$p_hl <- predict(mod_step, newdata=dta5_mod, type = "response")
+#cor.test(dta5_mod, dta5_mod$DIFFHEAR, method="pearson", conf.level=0.95)
+
+roccurve.a <- roc(dta5_mod$DIFFHEAR ~ dta5_mod$p_hl) 
+roccurve.a
+
+## Test data - add later
+#pred_b_test <- predict(mod.b, newdata=lab1.test)
+#cor.test(pred_b_test, lab1.test$SBP, method="pearson", conf.level=0.95)
+
+
+## ------------------------------------------------------------------------------------------------
+dta6_mod <- dta6 %>% dplyr::select(-DIVINYR , -WIDINYR)
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta6_mod)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta6_mod)
+
+mod_step <- stepAIC(mod_org, scope=formula(mod_final), direction = "forward")
+summary(mod_step)
+
+## Training data
+dta6_mod$p_hl <- predict(mod_step, newdata=dta6_mod, type = "response")
+#cor.test(dta6_mod, dta6_mod$DIFFHEAR, method="pearson", conf.level=0.95)
+
+roccurve.a <- roc(dta6_mod$DIFFHEAR ~ dta6_mod$p_hl) 
+roccurve.a
+
+## Test data - add later
+#pred_b_test <- predict(mod.b, newdata=lab1.test)
+#cor.test(pred_b_test, lab1.test$SBP, method="pearson", conf.level=0.95)
+
+
+## ------------------------------------------------------------------------------------------------
+dta7_mod <- dta7 %>% dplyr::select(-DIVINYR , -WIDINYR)
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta7_mod)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta7_mod)
+
+mod_step <- stepAIC(mod_org, scope=formula(mod_final), direction = "forward")
+summary(mod_step)
+
+## Training data
+dta7_mod$p_hl <- predict(mod_step, newdata=dta7_mod, type = "response")
+#cor.test(dta7_mod, dta7_mod$DIFFHEAR, method="pearson", conf.level=0.95)
+
+roccurve.a <- roc(dta7_mod$DIFFHEAR ~ dta7_mod$p_hl) 
+roccurve.a
+
+## Test data - add later
+#pred_b_test <- predict(mod.b, newdata=lab1.test)
+#cor.test(pred_b_test, lab1.test$SBP, method="pearson", conf.level=0.95)
+
+
+## ------------------------------------------------------------------------------------------------
+dta8_mod <- dta8 %>% dplyr::select(-DIVINYR , -WIDINYR)
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta8_mod)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta8_mod)
+
+mod_step <- stepAIC(mod_org, scope=formula(mod_final), direction = "forward")
+summary(mod_step)
+
+## Training data
+dta8_mod$p_hl <- predict(mod_step, newdata=dta8_mod, type = "response")
+#cor.test(dta8_mod, dta8_mod$DIFFHEAR, method="pearson", conf.level=0.95)
+
+roccurve.a <- roc(dta8_mod$DIFFHEAR ~ dta8_mod$p_hl) 
+roccurve.a
+
+## Test data - add later
+#pred_b_test <- predict(mod.b, newdata=lab1.test)
+#cor.test(pred_b_test, lab1.test$SBP, method="pearson", conf.level=0.95)
+
+
+## ------------------------------------------------------------------------------------------------
+dta9_mod <- dta9 %>% dplyr::select(-DIVINYR , -WIDINYR)
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta9_mod)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta9_mod)
+
+mod_step <- stepAIC(mod_org, scope=formula(mod_final), direction = "forward")
+summary(mod_step)
+
+## Training data
+dta9_mod$p_hl <- predict(mod_step, newdata=dta9_mod, type = "response")
+#cor.test(dta9_mod, dta9_mod$DIFFHEAR, method="pearson", conf.level=0.95)
+
+roccurve.a <- roc(dta9_mod$DIFFHEAR ~ dta9_mod$p_hl) 
+roccurve.a
+
+## Test data - add later
+#pred_b_test <- predict(mod.b, newdata=lab1.test)
+#cor.test(pred_b_test, lab1.test$SBP, method="pearson", conf.level=0.95)
+
+
+## ------------------------------------------------------------------------------------------------
+dta10_mod <- dta10 %>% dplyr::select(-DIVINYR , -WIDINYR)
+mod_org <- glm(DIFFHEAR ~1, 
+               family = "binomial",
+               data = dta10_mod)
+mod_final <- glm(DIFFHEAR ~., 
+                 family = "binomial",
+                 data = dta10_mod)
+
+mod_step <- stepAIC(mod_org, scope=formula(mod_final), direction = "forward")
+summary(mod_step)
+
+## Training data
+dta10_mod$p_hl <- predict(mod_step, newdata=dta10_mod, type = "response")
+#cor.test(dta10_mod, dta10_mod$DIFFHEAR, method="pearson", conf.level=0.95)
+
+roccurve.a <- roc(dta10_mod$DIFFHEAR ~ dta10_mod$p_hl) 
+roccurve.a
+
+## Test data - add later
+#pred_b_test <- predict(mod.b, newdata=lab1.test)
+#cor.test(pred_b_test, lab1.test$SBP, method="pearson", conf.level=0.95)
+
