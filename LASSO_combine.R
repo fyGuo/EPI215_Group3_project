@@ -53,8 +53,9 @@ for (i in 1:10){
 }
 
 beta <- rowMeans(mat)
-beta
+names(beta) <- coef(lasso[[1]]) %>% rownames()
+beta <- beta[beta!=0]
 
-x <- cbind(1, x)
-colnames(x)[1] <- "intercept"
 
+
+saveRDS(beta, "pooled_beta.rds")
