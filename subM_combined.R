@@ -7,7 +7,7 @@ library(fastDummies)
 library(gamlr)
 library(pROC)
 
-# write a function to do stepwise model
+# write a function to do subject matter knowledge model
 fun_sub <- function(data_name){
   dta <- read_csv(data_name)
   mod <- lm(DIFFHEAR ~ AGE + I(SEX == "male") + FAMSIZE + MARST + RACE + 
