@@ -25,7 +25,7 @@ fun_pred <- function(method){
              m= 1,
              method = c("", "", "", "", "", "", "", "", "", "",
                         "rf", "", "", "", "", "", "", "", "", "",
-                        "", "", "", "", "",""))
+                        "", "", "", "",""))
   
   imp_df <- complete(mi, action = "long")
   
@@ -34,35 +34,37 @@ fun_pred <- function(method){
   
   
   if (method == "lasso") {
-    logit <- 11.33081 + 5.591395e-02 *imp_df$AGE  -9.019127e-03 *imp_df$BIRTHYR + 2.274707e-01 *df$VETDISAB +
-      1.700971e-05*(imp_df$SEX =="male") + 4.435602e-02* (imp_df$RACE == "Otherse") + 
-      1.541819e-02*(imp_df$EDUC == "Less than high school") -1.965099e-03*(imp_df$WORK_STATUS == "Employed")
+    logit <-  1.363527e+01 + 5.332333e-02*imp_df$AGE  -9.844508e-03*imp_df$BIRTHYR  +
+      -2.885644e-01*(imp_df$SEX=="female") +
+      1.700971e-05*(imp_df$SEX =="male") + 6.480554e-02* (imp_df$RACE == "Otherse") + 
+      7.366961e-03*(imp_df$EDUC == "Less than high school")+
+      2.106638e-03*(imp_df$WORKEDYR == "No") + 
+      -2.180949e-018*(imp_df$VETSTAT == "Not a veteran") + 7.611356e-05*(imp_df$VETSTAT == "Veteran")+
+      -2.785161e-02 *(imp_df$WORK_STATUS == "Employed")
   } else if (method == "step") {
-    logit <- -8.91351115 + 0.07972189 *imp_df$AGE + 0.33867899 *df$VETDISAB +
-       0.68499614*(imp_df$SEX =="male")  -0.18544912*(imp_df$RACE == "Black") + 
-      0.90315990* (imp_df$RACE == "Otherse") + 0.24807138*(imp_df$RACE == "white")+
-      0.13501277*(imp_df$EDUC == "High school") + 0.41034996*(imp_df$EDUC == "Less than high school") +
-      0.37274675*(imp_df$WORK_STATUS == "Not in labor force ")+ 0.88153670*(imp_df$WORK_STATUS == "Unmployed")+
-       0.88153670*(imp_df$CLASSWKR == "Works for wages")  +
-      0.17922818*(imp_df$MARST == "Married") + 0.23159559*(imp_df$MARST == "Never married")+
-      0.02369239*(imp_df$MARST == "Widowed") -0.16143992*imp_df$INCTOT -
-      7.19494778*(imp_df$VETSTAT == "Veteran")
+    logit <- -8.91351115 + 7.337873e-02 *imp_df$AGE + 
+      7.178938e-01 *(imp_df$SEX =="male")  -1.060457e-01 *(imp_df$RACE == "Black") + 
+      9.501539e-01* (imp_df$RACE == "Otherse") +2.668397e-01*(imp_df$RACE == "white")+
+      4.606095e-01 *(imp_df$WORK_STATUS == "Not in labor force ")+ 1.008491e+00 *(imp_df$WORK_STATUS == "Unmployed")+
+      3.716458e-01*(imp_df$VETSTAT == "Veteran")+
+    1.421283e-01*(imp_df$EDUC == "High school") + 3.921671e-01*(imp_df$EDUC == "Less than high school") +
+      1.367107e-01*(imp_df$MARST == "Married") + 1.367107e-01*(imp_df$MARST == "Never married")+
+      2.126605e-01 *(imp_df$MARST == "Widowed")-1.314068e-06 *imp_df$INCTOT +
+      -6.861845e+00 *(imp_df$CLASSWKR == "Works for wages")  
   } else if (method == "subject") {
-    logit <-  -0.6629878906  + 0.0098931031 *imp_df$AGE  +
-      0.0751189798*(imp_df$SEX =="male")  -0.0024180062*imp_df$FAMSIZE -
-      0.0057301508*(imp_df$MARST == "Married") +0.0113716227*(imp_df$MARST == "Never married")+
-      0.0207945420*(imp_df$MARST == "Widowed")-
-    
-      0.0172127130*(imp_df$RACE == "Black") + 0.1162875647* (imp_df$RACE == "Otherse") + 
-      0.0211695038*(imp_df$RACE == "white")-0.0036881010*imp_df$HISPAN+
-      
-      0.0157239216*(imp_df$EDUC == "High school") +0.0572279240*(imp_df$EDUC == "Less than high school") -
-      0.0295635144*imp_df$HCOVANY + 
-      0.0024000130 *(imp_df$CLASSWKR == "Works for wages") +
-      0.0362989932  *(imp_df$WORK_STATUS == "Not in labor force ")+  0.1108005827  *(imp_df$WORK_STATUS == "Unmployed")-
+    logit <-   -0.6574628380  + 0.0098779153 *imp_df$AGE  +
+      0.0748649237 *(imp_df$SEX =="male")  -0.0023908350*imp_df$FAMSIZE  
+    -0.0059210114 *(imp_df$MARST == "Married") +0.0112374997*(imp_df$MARST == "Never married")+
+      0.0206947650*(imp_df$MARST == "Widowed")
+    -0.0169537823*(imp_df$RACE == "Black") + 0.1164300154 * (imp_df$RACE == "Otherse") + 
+      0.0212319529*(imp_df$RACE == "white")-0.0036402812*imp_df$HISPAN+
+      0.0158122397*(imp_df$EDUC == "High school") +0.0572512745 *(imp_df$EDUC == "Less than high school") 
+      -0.0290864272*imp_df$HCOVANY  
+      -0.0027835971  *(imp_df$CLASSWKR == "Works for wages") +
+      0.0360499579   *(imp_df$WORK_STATUS == "Not in labor force ")+   0.1112976046  *(imp_df$WORK_STATUS == "Unmployed")
       0.0157405111  *(imp_df$WORKEDYR == "No, but worked 1-5 yrs age") + 0.0160801326 * (imp_df$WORKEDYR == "Yes")
-   -0.0005932573 *imp_df$UHRSWORK +
-      0.0602614459*(imp_df$VETSTAT == "Veteran")
+      -0.0005833883 *imp_df$UHRSWORK +
+        0.0603925692  *(imp_df$VETSTAT == "Veteran")
   }
   
   p <- exp(logit)/(1+exp(logit))
@@ -93,7 +95,7 @@ mean((lasso_p - dta$DIFFHEAR)^2)
 tic()
 # impute the testing dataset 1000 times to evaluate the performance of model 
 # more precisely.
-step <- furrr::future_map_dfc(rep("step", 1000),
+step <- furrr::future_map_dfc(rep("step", 100),
                                fun_pred,
                                .progress = TRUE,
                                .options = furrr::future_options(seed = 123))
@@ -106,7 +108,7 @@ mean((step_p - dta$DIFFHEAR)^2, na.rm = T)
 tic()
 # impute the testing dataset 1000 times to evaluate the performance of model 
 # more precisely.
-subject <- furrr::future_map_dfc(rep("subject", 1000),
+subject <- furrr::future_map_dfc(rep("subject", 100),
                               fun_pred,
                               .progress = TRUE,
                               .options = furrr::future_options(seed = 123))
@@ -157,9 +159,9 @@ pROC_sub
 
 df <- data.frame(sep = c(pROC_lasso$specificities, pROC_step$specificities,pROC_sub$specificities),
        sens = c(pROC_lasso$sensitivities, pROC_step$sensitivities,pROC_sub$sensitivities),
-       mod = c(rep("LASSO, AUC = 0.704", length(pROC_lasso$specificities)),
-               rep("StepwiseAIC, AUC = 0.505", length(pROC_step$specificities)),
-               rep("Subject knowledge, AUC = 0.707", length(pROC_sub$specificities))))
+       mod = c(rep("LASSO, AUC = 0.699", length(pROC_lasso$specificities)),
+               rep("StepwiseAIC, AUC = 0.688", length(pROC_step$specificities)),
+               rep("Subject knowledge, AUC = 0.711", length(pROC_sub$specificities))))
 
 ggplot(df) + 
   geom_line(aes(x = 1-sep, y = sens, color = as.factor(mod))) + 
@@ -187,7 +189,7 @@ ggplot(df_new) +
   theme_bw() + 
   theme(legend.title =  element_blank(),
         legend.position = "bottom")+
-  labs(x = "probability")
+  labs(x = "Predicted probability")
 ggsave("histogram.png",
        dpi = 300,
        width = 20,

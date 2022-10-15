@@ -13,6 +13,8 @@ dta$dataset[train_id] <- "train"
 table(dta$dataset)
 #############################
 # 1. Family size: continuous variable, we can keep this variable since
+
+dta$FAMSIZE
 # 2. ELDCH: age of eldest own child in household, less related to this adult's hearing situation
 # thus, less delete this one
 dta <- dta %>% dplyr::select(-ELDCH)
@@ -229,6 +231,11 @@ dta$DEPARTS[dta$DEPARTS == 0] <- NA
 dta$DEPARTS[dta$DEPARTS <= 1200] <- "AM"
 dta$DEPARTS[dta$DEPARTS > 1200] <- "PM"
 
+
+## 57. VETDISAB VA service-connected disability rating
+dta$VETDISAB[dta$VETDISAB == 0] <- NA
+
+dta$VETDISAB <-if_else(dta$VETDISAB== 1, 0, 1)
 #############################
 ###########################
 # check the missingness situation
@@ -242,7 +249,7 @@ sapply(dta, function(x){
 # other missing values are over 50%.
 # I would like to try to impute classwkr, but delete other variables which is not of much use
 
-dta <- dta %>% dplyr::select(-AVAILBLE, -CARPOOL,-TRANTIME,-GCRESPON,-WKSWORK2)
+dta <- dta %>% dplyr::select(-AVAILBLE, -CARPOOL,-TRANTIME,-GCRESPON,-WKSWORK2, -VETDISAB)
 saveRDS(dta, "clean_data_whole.rds")
 
 dta_train <- dta %>% dplyr::filter(dataset == "train")

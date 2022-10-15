@@ -17,7 +17,7 @@ fun_lasso <- function(data_name){
   })
   
   dta_n <- dta_n[,class != "character"]
-  class <- sapply(dta1_n, function(x){
+  class <- sapply(dta_n, function(x){
     class(x)
   })
   #class
@@ -45,7 +45,7 @@ plan("multicore")
 lasso <- furrr::future_map(paste("MI_clean_data", 1:10, ".csv", sep = ""),
                   fun_lasso)
 
-mat <- matrix(nrow = 37, ncol = 10)
+mat <- matrix(nrow = 36, ncol = 10)
 
 for (i in 1:10){
   mat[,i] <- coef(lasso[[i]]) %>% as.matrix()
@@ -58,4 +58,4 @@ beta <- beta[beta!=0]
 
 
 
-saveRDS(beta, "pooled_beta.rds")
+saveRDS(beta, "pooled_lasso.rds")
