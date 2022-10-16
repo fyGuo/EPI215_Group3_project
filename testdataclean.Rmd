@@ -1,7 +1,8 @@
 ---
-title: "testdata"
+title: "Monday Submission - cleaning real test data and running final model"
 output: html_document
 date: "2022-10-16"
+names: "Catherine Allende, Jeffery Chang, Fuyu Guo, Colleen McGrath"
 ---
 
 
@@ -9,7 +10,8 @@ date: "2022-10-16"
 library(tidyverse)
 library(haven)
 ```
-
+######
+#Please note: All of our work for training and testing the various models is available on our shared Github. We did not include all of the models we tried here, just the coefficients to predict from our final model we selected.
 
 #################################
 # read in the unformatted data
@@ -17,13 +19,7 @@ library(haven)
 dta <- read_csv("project_test_data_noformat_nomissing.csv")
 ```
 
-# determine the number of observations in the training dataset
-round(dim(dta)[1]*0.8)
-set.seed(123)
-train_id<- sample(1:dim(dta)[1], 7038)
-dta$dataset <- "test"
-dta$dataset[train_id] <- "train"
-table(dta$dataset)
+# Clean data according to how we did in the training data.
 #############################
 # 1. Family size: continuous variable, we can keep this variable since
 
@@ -32,8 +28,7 @@ dta$FAMSIZE
 ```
 
 
-# 2. ELDCH: age of eldest own child in household, less related to this adult's hearing situation
-# thus, less delete this one
+# 2. ELDCH: age of eldest own child in household, less related to this adult's hearing situation, so we decided to remove this variable based on subject-matter knowledge
 
 ```{r}
 dta <- dta %>% dplyr::select(-ELDCH)
@@ -64,8 +59,7 @@ dta <- dta %>%
 
 
 # 5. marrno_f: time married. This one carries similar information as married.
-# I think times married is less related to hearing loss if the marriage status has already been considered.
-# just leave out this information
+# I think times married is less related to hearing loss if the marriage status has already been considered, so we decided to remove this variable based on subject-matter knowledge.
 
 ```{r}
 dta <- dta %>% dplyr::select(-MARRNO)
@@ -73,7 +67,7 @@ dta <- dta %>% dplyr::select(-MARRNO)
 
 
 # 6. MARRINYR: married within the last year
-# this one is confusing and is less useful than marriage status, so delete it.
+# this one is confusing and is less useful than marriage status, so we decided to remove this variable based on subject-matter knowledge.
 
 ```{r}
 dta <- dta %>% dplyr::select(-MARRINYR)
@@ -113,7 +107,7 @@ dta <- dta %>%
 
 
 # 11. HISPAN: collapse to year vs. no
-# to make it easier, if the person doesn't report his/her hispanic, we treat it as no
+# Assumption made: if the person doesn't report his/her hispanic, we treat it as no
 
 ```{r}
 dta <- dta %>%
@@ -121,16 +115,14 @@ dta <- dta %>%
 ```
 
 
-# 12. SPEAKENG_f: speak english or not, it covers similar information as race and education
-# to make the dataset smaller, I decide to delete it
+# 12. SPEAKENG_f: speak english or not, it covers similar information as race and education, so we decided to remove this variable based on subject-matter knowledge
 
 ```{r}
 dta <- dta %>% dplyr::select(-SPEAKENG)
 ```
 
 
-# 13. RACNUM_f: race groups, less useful information given we have race category
-# delete it
+# 13. RACNUM_f: race groups, less useful information given we have race category so we decided to remove this variable based on subject-matter knowledge
 
 ```{r}
 dta <- dta %>% dplyr::select(-RACNUM)
@@ -175,7 +167,7 @@ dta <- dta %>%
 ```
 
 
-# 24.SCHLTYPE_f: school type , less important, just delete
+# 24.SCHLTYPE_f: school type , less important, so we decided to remove this variable based on subject-matter knowledge
 
 
 
@@ -214,7 +206,7 @@ dta <- dta %>%
 ```
 
 # 29. value WRKLSTWK_f: worked last week ? this one is not of much use and can be sensible to the 
-# survey time, so just delete it
+# survey time, sso we decided to remove this variable based on subject-matter knowledge
 ```{r}
 dta <- dta %>% dplyr::select(-WRKLSTWK)
 ```
@@ -231,7 +223,7 @@ dta <- dta %>% dplyr::select(-ABSENT)
 dta <- dta %>% dplyr::select(-LOOKING)
 ```
 
-# 32. AVAILBLE: convert the variable as Collen suggested
+# 32. AVAILBLE:
 # 1. avaliable for work or has a work
 # 2. Not avaliable for work because of illness
 # 3. Not avaliable for work because of other reasons
@@ -244,11 +236,11 @@ dta$AVAILBLE <- ifelse(dta$AVAILBLE == 3, "Not avaliable because of oteher reaso
 
 
 # 33. VETDIASB: not found in the data
-# 34. DIFFHEAR: that's our outcome
+# 34. DIFFHEAR: that's our outcome, but that is not in the testing dataset so we will leave out this code.
 # 0:NO, 1:yes
 
-dta$DIFFHEAR[dta$DIFFHEAR==0] <- NA
-dta$DIFFHEAR <- dta$DIFFHEAR - 1
+#dta$DIFFHEAR[dta$DIFFHEAR==0] <- NA
+#dta$DIFFHEAR <- dta$DIFFHEAR - 1
 
 
 # 35. VETSTAT: just keep this information for veteran
@@ -288,7 +280,7 @@ dta$CARPOOL[dta$CARPOOL==0] <- NA
 dta$CARPOOL <- if_else(dta$CARPOOL==1, "Drives alone", "Carpools")
 ```
 
-# 47. RIDERS: we already have the carpool variable, which makes this variable less useful
+# 47. RIDERS: we already have the carpool variable, which makes this variable less useful so we decided to remove this variable based on subject-matter knowledge
 ```{r}
 dta <- dta %>% dplyr::select(-RIDERS)
 ```
@@ -299,7 +291,7 @@ dta$GCHOUSE[dta$GCHOUSE==0] <- NA
 dta$GCHOUSE <- dta$GCHOUSE-1
 ```
 
-# 49. GCMONTHS: less useful compared to GXRESPON
+# 49. GCMONTHS: less useful compared to GXRESPON so we decided to remove this variable based on subject-matter knowledge
 ```{r}
 dta <- dta %>% dplyr::select(-GCMONTHS)
 ```
@@ -323,11 +315,10 @@ dta <- dta %>% mutate(WORKEDYR = case_when(
   WORKEDYR ==2 ~ "No, but worked 1-5 yrs age",
   WORKEDYR == 3 ~"Yes"
 ))
-View(dta)
+#View(dta)
 ```
 
 # 54. YRMARR: year of married, not much useful but keep it here
-# we can calculate the age of married
 
 # 55. TRANTIME: time of transportaton, keep original value
 ```{r}
@@ -364,12 +355,14 @@ sapply(dta, function(x){
 # the DIVINYR and WIDINYR are missing because some people are never married
 # other missing values are over 50%.
 # I would like to try to impute classwkr, but delete other variables which is not of much use
+# For the testing dataset, we will not be using the DIVINYR, WIDINYR, or CLASSWKR variables given that they are not in the final LASSO-based model anyway after imputation in the training set for CLASSWKR.
 
 ```{r}
 dta <- dta %>% dplyr::select(-AVAILBLE, -CARPOOL,-TRANTIME,-GCRESPON,-WKSWORK2, -VETDISAB, -DIVINYR, -WIDINYR, -CLASSWKR)
 write.csv(dta, "clean_data_newtest.csv")
 ```
 
+#This is the model we derived from LASSO with CV (See separate file in the Github for doing this based on the training dataset.
 ```{r}
 logit <-  1.363527e+01 + 5.332333e-02*dta$AGE  -9.844508e-03*dta$BIRTHYR  +
       -2.885644e-01*(dta$SEX=="female") +
