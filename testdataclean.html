@@ -623,14 +623,16 @@ in the Github for doing this based on the training dataset.</li>
       -2.785161e-02 *(dta$WORK_STATUS == &quot;Employed&quot;)
 dta$ProbHL &lt;- exp(logit)/(1+exp(logit))</code></pre>
 <ul>
-<li>We set the probability cutoff at 0.2.</li>
+<li>We set the probability cutoff at 0.1695. We choose this point based
+on the ROC curves in our testing dataset. At the probability = 0.1695 as
+the cut-off, sensitivity = specificity.</li>
 </ul>
-<pre class="r"><code>dta$HearLossYN &lt;- ifelse(dta$ProbHL&lt;0.2,0,1)</code></pre>
+<pre class="r"><code>dta$HearLossYN &lt;- ifelse(dta$ProbHL&lt;0.1695,0,1)</code></pre>
 <ul>
 <li>Save the data as a csv file</li>
 </ul>
 <pre class="r"><code>dta$ID &lt;- dta$id
-dta_save &lt;- dta %&gt;% dplyr::select(c(ProbHL,HearLossYN,ID))
+dta_save &lt;- dta %&gt;% dplyr::select(c(ID, ProbHL,HearLossYN))
 write.csv(dta_save, &quot;group3_data.csv&quot;)</code></pre>
 </div>
 

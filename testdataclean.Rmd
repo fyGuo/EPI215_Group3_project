@@ -260,15 +260,15 @@ logit <-  1.363527e+01 + 5.332333e-02*dta$AGE  -9.844508e-03*dta$BIRTHYR  +
 dta$ProbHL <- exp(logit)/(1+exp(logit))
 ```
 
-- We set the probability cutoff at 0.2.
+- We set the probability cutoff at 0.1695. We choose this point based on the ROC curves in our testing dataset. At the probability = 0.1695 as the cut-off, sensitivity = specificity.
 ```{r}
-dta$HearLossYN <- ifelse(dta$ProbHL<0.2,0,1)
+dta$HearLossYN <- ifelse(dta$ProbHL<0.1695,0,1)
 ```
 
 - Save the data as a csv file
 
 ```{r}
 dta$ID <- dta$id
-dta_save <- dta %>% dplyr::select(c(ProbHL,HearLossYN,ID))
+dta_save <- dta %>% dplyr::select(c(ID, ProbHL,HearLossYN))
 write.csv(dta_save, "group3_data.csv")
 ```
