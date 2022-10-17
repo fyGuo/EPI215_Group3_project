@@ -1,8 +1,8 @@
 ---
 title: "Monday Submission - cleaning real test data and running final model"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 date: '2022-10-16'
 names: Catherine Allende, Jeffery Chang, Fuyu Guo, Colleen McGrath
 ---
