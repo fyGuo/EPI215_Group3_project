@@ -95,7 +95,7 @@ mean((lasso_p - dta$DIFFHEAR)^2)
 tic()
 # impute the testing dataset 1000 times to evaluate the performance of model 
 # more precisely.
-step <- furrr::future_map_dfc(rep("step", 100),
+step <- furrr::future_map_dfc(rep("step", 1000),
                                fun_pred,
                                .progress = TRUE,
                                .options = furrr::future_options(seed = 123))
@@ -108,7 +108,7 @@ mean((step_p - dta$DIFFHEAR)^2, na.rm = T)
 tic()
 # impute the testing dataset 1000 times to evaluate the performance of model 
 # more precisely.
-subject <- furrr::future_map_dfc(rep("subject", 100),
+subject <- furrr::future_map_dfc(rep("subject", 1000),
                               fun_pred,
                               .progress = TRUE,
                               .options = furrr::future_options(seed = 123))
@@ -131,6 +131,11 @@ pROC_lasso <- roc(dta$DIFFHEAR,
                 # arguments for plot
                 plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
                 print.auc=TRUE, show.thres=TRUE)
+
+# let's derive the cut-off
+diff <- abs(pROC_lasso$sensitivities - pROC_lasso$specificities)
+pROC_lasso$thresholds[diff == min(diff)]
+
 
 pROC_step <- roc(dta$DIFFHEAR,
                   step_p,
@@ -163,8 +168,13 @@ df <- data.frame(sep = c(pROC_lasso$specificities, pROC_step$specificities,pROC_
                rep("StepwiseAIC, AUC = 0.688", length(pROC_step$specificities)),
                rep("Subject knowledge, AUC = 0.711", length(pROC_sub$specificities))))
 
+
+
+
 ggplot(df) + 
   geom_line(aes(x = 1-sep, y = sens, color = as.factor(mod))) + 
+  geom_abline(aes(slope = -1, intercept = 1),  linetype = "dotted") +
+  geom_text(aes(x = 0.2, y = 0.65), label = "cutoff for lasso= 0.1695")+
   theme_bw() + 
   theme(legend.title =  element_blank(),
         legend.position = "bottom")+
@@ -178,12 +188,14 @@ ggsave("ROC.png",
 
 
 df_new <- data.frame(probability = c(lasso_p, step_p, subject_p),
-                 mod = c(rep("LASSO, AUC = 0.704", length(lasso_p)),
-                         rep("StepwiseAIC, AUC = 0.505", length(step_p)),
-                         rep("Subject knowledge, AUC = 0.707", length(subject_p))))
+                     HearLoss = c(dta$DIFFHEAR, dta$DIFFHEAR, dta$DIFFHEAR),
+                 mod = c(rep("LASSO, AUC = 0.699", length(lasso_p)),
+                         rep("StepwiseAIC, AUC = 0.688", length(step_p)),
+                         rep("Subject knowledge, AUC = 0.711", length(subject_p))))
 
+df_new$HearLoss <- if_else(df_new$HearLoss == 0, "No hearing loss", "Hearing loss")
 ggplot(df_new) + 
-  geom_density(aes(x = probability,  fill = as.factor(mod))) + 
+  geom_density(aes(x = probability,  fill = as.factor(HearLoss)), alpha = 0.5) + 
   facet_grid(mod~.)+
   geom_vline(aes(xintercept = mean(dta$DIFFHEAR) ), color = "red", linetype = "dotted")+
   theme_bw() + 
